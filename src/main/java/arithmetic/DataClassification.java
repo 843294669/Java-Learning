@@ -19,6 +19,9 @@ import java.util.Map;
  * 输入12个数据，第一个数据为c，第二个数据为b，剩余10个数据为需要分类的数据，
  * <p>
  * 请找到有效类型中包含数据最多的类型，并输出该类型含有多少个数据。
+ * 解题思路：
+ * 进制数定义和转换，位运算，移位运算，HashMap的去重和统计的应用
+ *
  */
 public class DataClassification {
     public static void main(String[] args) {
@@ -26,6 +29,8 @@ public class DataClassification {
         // 输入数据
         int c = 2; // c的值
         int b = 3; // b的值
+        // int d = 0544;  //0 开头表示八进制
+        // int e = 0b11011 // 0b 开头表示二进制
         int[] data = {0x01010101, 0x01010103, 0x01010201, 0x01010105, 0x01010001,
                 0x01010301, 0x02010101, 0x03010101, 0x01010101, 0x01030101};
 

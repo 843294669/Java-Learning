@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 输入描述
  * <p>
  * 输入字符串的最大长度为200
+ * 解题思路：
+ * 字符串操作方法，回溯法，变量标记法
  */
 public class NarcissisticNumber {
     // 水仙花数只有四个
@@ -34,7 +36,7 @@ public class NarcissisticNumber {
     };
 
     public static int splitStringToNarcissisticNumbers(String s) {
-        // 分隔结果是否唯一:
+        // 变量标记分隔结果是否唯一:
         // uniqueCount：0 分隔不成功
         // uniqueCount：1 分隔成功且唯一
         // uniqueCount：>1 分隔成功且不唯一
