@@ -25,27 +25,28 @@ public class PasswordTranslate {
     }
 
     private static String getPassword(String password) {
-        char[] chars = password.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char ch = chars[i];
+        StringBuffer bf = new StringBuffer();
+        for (int i = 0; i < password.length(); i++) {
+            char ch = password.charAt(i);
             if (ch >= 'A' && ch <= 'Z') {
                 if (ch == 'Z')
-                    chars[i] = 'a';
+                    ch = 'a';
                 else
                     // 大写字母+32等于小写字母
-                    chars[i] = (char)(ch + 33);
+                    ch = (char)(ch + 33);
                 //Character.toLowerCase(ch);
             }
             else if (ch >= 'a' && ch <= 'z') {
                 // ch 在a-z之间则匹配相应数字
                 for (int j = 0; j < keyMapping.length; j++) {
                     if (keyMapping[j].contains(String.valueOf(ch))) {
-                        chars[i] = (char) (j + 2 + '0');
+                        ch = (char) (j + 2 + '0');
                     }
                 }
             }
+            bf.append(ch);
         }
-        return String.valueOf(chars);
+        return bf.toString();
     }
 
 }
