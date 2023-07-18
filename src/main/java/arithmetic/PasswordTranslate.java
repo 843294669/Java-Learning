@@ -40,7 +40,7 @@ public class PasswordTranslate {
                 // ch 在a-z之间则匹配相应数字
                 for (int j = 0; j < keyMapping.length; j++) {
                     if (keyMapping[j].contains(String.valueOf(ch))) {
-                        ch = (char) (j + 2 + '0');
+                        ch = (char) (j + 2);
                     }
                 }
             }
