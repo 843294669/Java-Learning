@@ -1,6 +1,7 @@
 package arithmetic;
 
 import java.io.*;
+import java.security.Key;
 
 
 public class CharCount {
@@ -8,10 +9,44 @@ public class CharCount {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String str;
         while ((str = br.readLine()) != null) {
-            sameCharMaxCount(str);
-            diffCharMaxCount(str);
-            nonRepeatCharMaxCount(str);
+//            sameCharMaxCount(str);
+//            diffCharMaxCount(str);
+//            nonRepeatCharMaxCount(str);
+            numberCharMaxCount(str);
         }
+    }
+
+    /**
+     * 输入一个字符串，返回其最长的数字子串，以及其长度。若有多个最长的数字子串，则将它们全部输出（按原字符串的相对位置）
+     * 输出字符串中最长的数字字符串和它的长度，中间用逗号间隔。如果有相同长度的串，则要一块儿输出（中间不要输出空格）。
+     * @param str
+     */
+    private static void numberCharMaxCount(String str) {
+        int k = 0, count = 0, startIndex = 0, currentIndex = 0;
+        StringBuilder sb = new StringBuilder();
+        int length = str.length();
+        for (int i = 0; i < length; i++) {
+            char ch = str.charAt(i);
+            if ('0' <= ch && ch <= '9') {
+                count++;
+                if (k < count) {
+                    k = count;
+                    currentIndex = startIndex;
+                    // 清空 StringBuilder
+                    sb.setLength(0);
+                }
+                else if (k == count) {
+                    sb.append(str.substring(currentIndex, k + currentIndex));
+                    currentIndex = startIndex;
+                }
+            }
+            else {
+                count = 0;
+                //当前分支是非数字，需要+1
+                startIndex = i + 1;
+            }
+        }
+        System.out.println(sb.append(str.substring(currentIndex, k + currentIndex) + "," + k));
     }
 
     /**
