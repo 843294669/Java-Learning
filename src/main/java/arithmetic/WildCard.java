@@ -43,25 +43,20 @@ public class WildCard {
             for (int i = 1; i <= m; i++) {
                 for (int j = 1; j <= n; j++) {
                     if (p[j - 1] == '?') {
-                        if (check(s[i - 1])) {
-                            dp[i][j] = dp[i - 1][j - 1];
-                        } else {
-                            dp[i][j] = false;
+                        if (dp[i - 1][j - 1] && check(s[i - 1])) {
+                            dp[i][j] = true;
                         }
                     } else if (p[j - 1] == '*') {
-                        if (check(s[i - 1])) {
-                            dp[i][j] = dp[i - 1][j] || dp[i][j - 1];   // 匹配任意次或0次
-                        } else {
-                            dp[i][j] = false;
+                        if ((dp[i - 1][j] || dp[i][j - 1]) && check(s[i - 1])) {
+                            dp[i][j] = true;   // 匹配任意次或0次
                         }
                     } else if (s[i - 1] == p[j - 1]) {
-                        if (check(s[i - 1])) {
-                            dp[i][j] = dp[i - 1][j - 1];
+                        if (dp[i - 1][j - 1] && check(s[i - 1])) {
+                            dp[i][j] = true;
                         }
                     }
                 }
             }
-
             System.out.println(dp[m][n]);
         }
 
