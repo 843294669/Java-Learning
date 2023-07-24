@@ -1,6 +1,9 @@
 package arithmetic;
 
+import java.lang.reflect.Array;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * 现在有一种密码变换算法。
@@ -17,14 +20,49 @@ public class PasswordTranslate {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+//        String password = scanner.next();
+//        translatePassword(password);
+        String key = scanner.next();
         String password = scanner.next();
-        long startTime = System.nanoTime();
-        System.out.println(getPassword(password));
-        long endTime = System.nanoTime();
-        System.out.println((endTime - startTime)/1000000.0 + "ms");
+        encryptPassword(key, password);
+        //dencryptPassword(password);
     }
 
-    private static String getPassword(String password) {
+    private static void dencryptPassword(String password) {
+    }
+
+    /**
+     * 有一种技巧可以对数据进行加密，它使用一个单词作为它的密匙。下面是它的工作原理：首先，选择一个单词作为密匙，如TRAILBLAZERS。
+     * 如果单词中包含有重复的字母，只保留第1个，将所得结果作为新字母表开头，并将新建立的字母表中未出现的字母按照正常字母表顺序加入新字母表。如下所示：
+     * A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+     * T R A I L B Z E S C D F G H J K M N O P Q U V W X Y (实际需建立小写字母的字母表，此字母表仅为方便演示）
+     *
+     * 上面其他用字母表中剩余的字母填充完整。在对信息进行加密时，信息中的每个字母被固定于顶上那行，
+     * 并用下面那行的对应字母一一取代原文的字母(字母字符的大小写状态应该保留)。因此，使用这个密匙， Attack AT DAWN (黎明时攻击)就会被加密为Tpptad TP ITVH。
+     * @param key
+     * @param password
+     */
+    private static void encryptPassword(String key, String password) {
+        int len = key.length();
+        Set set = new LinkedHashSet();
+        for (int i = 0; i < len; i++) {
+            char ch = key.charAt(i);
+            set.add(ch);
+
+        }
+        for (int i = 0; i < 26; i++) {
+            set.add((char)('a' + i));
+        }
+        StringBuilder sb = new StringBuilder();
+        Object[] array = set.toArray();
+        for (int i = 0; i < password.length(); i++) {
+            sb.append(array[Character.toLowerCase(password.charAt(i)) - 'a']);
+        }
+        sb.trimToSize();
+        System.out.println(sb);
+    }
+
+    private static void translatePassword(String password) {
         StringBuffer bf = new StringBuffer();
         for (int i = 0; i < password.length(); i++) {
             char ch = password.charAt(i);
@@ -46,7 +84,7 @@ public class PasswordTranslate {
             }
             bf.append(ch);
         }
-        return bf.toString();
+        System.out.println(bf);
     }
 
 }
