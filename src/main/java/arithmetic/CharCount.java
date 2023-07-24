@@ -1,7 +1,9 @@
 package arithmetic;
 
 import java.io.*;
-import java.security.Key;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Stream;
 
 
 public class CharCount {
@@ -12,7 +14,27 @@ public class CharCount {
 //            sameCharMaxCount(str);
 //            diffCharMaxCount(str);
 //            nonRepeatCharMaxCount(str);
-            numberCharMaxCount(str);
+//            numberCharMaxCount(str);
+            firstOnlyOneChar(str);
+        }
+    }
+
+    /**
+     * 找出字符串中第一个只出现一次的字符
+     * 输出第一个只出现一次的字符，如果不存在输出-1
+     */
+    private static void firstOnlyOneChar(String str) {
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            // 注意index使用
+            if (str.indexOf(c) == str.lastIndexOf(c)) {
+                System.out.println(c);
+                break;
+            }
+            if (i == str.length() - 1) {
+                System.out.println(-1);
+            }
         }
     }
 
