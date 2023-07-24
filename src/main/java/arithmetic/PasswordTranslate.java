@@ -1,9 +1,13 @@
 package arithmetic;
 
-import java.lang.reflect.Array;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedHashSet;
-import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
+import java.util.function.ToIntFunction;
 
 /**
  * 现在有一种密码变换算法。
@@ -17,18 +21,68 @@ import java.util.Set;
 public class PasswordTranslate {
 
     private static final String[] keyMapping = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    static IntBinaryOperator f = (c, n) -> {
+        n += c;
+        if (n == 47) {
+            n = 9 + 48;
+        } else if (n == 58) {
+            n = 48;
+        } else if (n == 64) {
+            n = 90;
+        } else if (n == 91) {
+            n = 65;
+        } else if (n == 96) {
+            n = 122;
+        } else if (n == 123) {
+            n = 97;
+        }
+        if (n > 64 && n < 91) {
+            n += 32;
+        } else if (n > 96 && n < 123) {
+            n -= 32;
+        }
+        return n;
+    };
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+//        Scanner scanner = new Scanner(System.in);
 //        String password = scanner.next();
 //        translatePassword(password);
-        String key = scanner.next();
-        String password = scanner.next();
-        encryptPassword(key, password);
-        //dencryptPassword(password);
+//        String key = scanner.next();
+//        String password = scanner.next();
+//        encryptPassword(key, password);
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        String str1;
+        String str2;
+        while ((str1 = bf.readLine()) != null && (str2 = bf.readLine()) != null) {
+            enOrDenPassword(str1, f, 1);
+            enOrDenPassword(str2, f, -1);
+        }
     }
 
-    private static void dencryptPassword(String password) {
+    /**
+     * 对输入的字符串进行加解密，并输出。
+     * 加密方法为：
+     * 当内容是英文字母时则用该英文字母的后一个字母替换，同时字母变换大小写,如字母a时则替换为B；字母Z时则替换为a；
+     * 当内容是数字时则把该数字加1，如0替换1，1替换2，9替换0；
+     * 其他字符不做变化。
+     * 解密方法为加密的逆过程。
+     *
+     * @param str
+     * @param num
+     */
+    private static void enOrDenPassword(String str, IntBinaryOperator f, int num) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (Character.isLetterOrDigit(ch)) {
+                sb.append((char) f.applyAsInt(ch, num));
+            }
+            else {
+                sb.append(ch);
+            }
+        }
+        System.out.println(sb);
     }
 
     /**
@@ -36,9 +90,10 @@ public class PasswordTranslate {
      * 如果单词中包含有重复的字母，只保留第1个，将所得结果作为新字母表开头，并将新建立的字母表中未出现的字母按照正常字母表顺序加入新字母表。如下所示：
      * A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
      * T R A I L B Z E S C D F G H J K M N O P Q U V W X Y (实际需建立小写字母的字母表，此字母表仅为方便演示）
-     *
+     * <p>
      * 上面其他用字母表中剩余的字母填充完整。在对信息进行加密时，信息中的每个字母被固定于顶上那行，
      * 并用下面那行的对应字母一一取代原文的字母(字母字符的大小写状态应该保留)。因此，使用这个密匙， Attack AT DAWN (黎明时攻击)就会被加密为Tpptad TP ITVH。
+     *
      * @param key
      * @param password
      */
@@ -51,7 +106,7 @@ public class PasswordTranslate {
 
         }
         for (int i = 0; i < 26; i++) {
-            set.add((char)('a' + i));
+            set.add((char) ('a' + i));
         }
         StringBuilder sb = new StringBuilder();
         Object[] array = set.toArray();
@@ -71,10 +126,9 @@ public class PasswordTranslate {
                     ch = 'a';
                 else
                     // 大写字母+32等于小写字母
-                    ch = (char)(ch + 33);
+                    ch = (char) (ch + 33);
                 //Character.toLowerCase(ch);
-            }
-            else if (ch >= 'a' && ch <= 'z') {
+            } else if (ch >= 'a' && ch <= 'z') {
                 // ch 在a-z之间则匹配相应数字
                 for (int j = 0; j < keyMapping.length; j++) {
                     if (keyMapping[j].contains(String.valueOf(ch))) {
