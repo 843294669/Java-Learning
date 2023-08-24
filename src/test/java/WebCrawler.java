@@ -25,7 +25,7 @@ public class WebCrawler {
     private static int time = 0;
 
     public static void main(String[] args) {
-        crawPage(BASE_URL + "/interview-preparation/teach-you-how-to-prepare-for-the-interview-hand-in-hand.html");
+        crawPage(BASE_URL + "/home.html");
         logger.info("Finished.");
     }
 

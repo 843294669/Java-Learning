@@ -1,7 +1,6 @@
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MyTest {
