@@ -22,37 +22,44 @@ public class WebCrawler {
     private static String replaceURL = "https://oss.javaguide.cn";
     private static String STATIC_RESOURCE_DIRECTORY = Path.of(System.getProperty("user.dir"), "src/main/resources/static").toString();
     private static List visited = new ArrayList<>();
+    private static int time = 0;
 
     public static void main(String[] args) {
-        crawPage(BASE_URL + "/home.html");
+        crawPage(BASE_URL + "/interview-preparation/teach-you-how-to-prepare-for-the-interview-hand-in-hand.html");
         logger.info("Finished.");
     }
 
     private static void crawPage(String url) {
         try {
-            logger.info("Craw Page:{}", url);
+            logger.info("Craw Page: {}", url);
             Connection.Response resp = Jsoup.connect(url)
+                    .timeout(6000)
+                    .maxBodySize(0)
                     .ignoreContentType(true)
-                    .ignoreHttpErrors(true)
-                    .timeout(5000).execute();
+                    .ignoreHttpErrors(true).execute();
             String filePath = getFilePath(url);
-            try (FileOutputStream output = new FileOutputStream(filePath)) {
-                if (url.endsWith(".html")) {
-                    Document doc = resp.parse();
-                    output.write(doc.html().replaceAll(replaceURL, "").getBytes());
-                    // 继续提取URL
-                    extractURLs(doc.select("link[rel]"));
-                    extractURLs(doc.select("script[src]"));
-                    extractURLs(doc.select("img[src]"));
-                    extractURLs(doc.select("a[href]"));
-                } else if (url.endsWith(".js")) {
-                    output.write(resp.body().replaceAll(replaceURL, "").getBytes());
-                } else {
-                    output.write(resp.bodyAsBytes());
-                }
+            if (resp.contentType().contains("image/")) {
+                saveFile(resp.bodyAsBytes(), filePath);
+            } else {
+                // 保留原字符
+                String body = resp.body();
+                saveFile(body, filePath);
+                // 继续提取URL
+                Document doc = Jsoup.parse(body);
+                extractURLs(doc.select("link[rel]"));
+                extractURLs(doc.select("script[src]"));
+                extractURLs(doc.select("img[src]"));
+                extractURLs(doc.select("a[href]"));
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
+            // 重试，可能是超时问题
+            if (time > 2) {
+                time = 0;
+                return;
+            }
+            time++;
+            crawPage(url);
         }
     }
 
@@ -91,6 +98,25 @@ public class WebCrawler {
         Path directory = Paths.get(filePath.substring(0, filePath.lastIndexOf('\\')));
         Files.createDirectories(directory);
         return filePath;
+    }
+
+    private static void saveFile(String content, String filePath) throws IOException {
+        if (Files.notExists(Path.of(filePath))) {
+            logger.info("Creating Page: {}", filePath);
+            try (FileOutputStream output = new FileOutputStream(filePath)) {
+                output.write(content.replaceAll(replaceURL, "").getBytes());
+            }
+        }
+    }
+
+    // 图片处理用字节流，防止格式错误不能打开
+    private static void saveFile(byte[] content, String filePath) throws IOException {
+        if (Files.notExists(Path.of(filePath))) {
+            logger.info("Creating Page: {}", filePath);
+            try (FileOutputStream output = new FileOutputStream(filePath)) {
+                output.write(content);
+            }
+        }
     }
 
 }

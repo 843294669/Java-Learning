@@ -28,15 +28,8 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.13.1</version> <!-- 版本可能会有所不同，根据实际情况选择 -->
+            <version>1.16.1</version> <!-- 版本可能会有所不同，根据实际情况选择 -->
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>https://maven.aliyun.com/repository/public</url>
-        </repository>
-    </repositories>
 
 </project>
