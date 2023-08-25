@@ -19,13 +19,17 @@ public class WebCrawler {
 
     static Logger logger = LoggerFactory.getLogger(WebCrawler.class);
     private static String BASE_URL = "https://javaguide.cn";
-    private static String replaceURL = "https://oss.javaguide.cn";
+    private static String replace1 = "https://oss.javaguide.cn";
+    private static String replace2 = "https://my-blog-to-use.oss-cn-beijing.aliyuncs.com";
     private static String STATIC_RESOURCE_DIRECTORY = Path.of(System.getProperty("user.dir"), "src/main/resources/static").toString();
     private static List visited = new ArrayList<>();
+    // 重试次数
     private static int time = 0;
+    // 是否覆写文件开关
+    private static boolean override = false;
 
     public static void main(String[] args) {
-        crawPage(BASE_URL + "/home.html");
+        crawPage(BASE_URL);
         logger.info("Finished.");
     }
 
@@ -73,9 +77,9 @@ public class WebCrawler {
                 continue;
             }
             String url = BASE_URL + page;
-            // 白名单中的黑名单
-            if (page.contains("http")) {
-                if (!page.contains("javaguide.cn")) {
+            if (page.contains("https")) {
+                // 白名单中的黑名单
+                if (!(page.contains(replace1) || page.contains(replace2))) {
                     continue;
                 }
                 url = page;
@@ -86,7 +90,8 @@ public class WebCrawler {
                     || page.endsWith(".jpg")
                     || page.endsWith(".svg")
                     || page.endsWith(".js")
-                    || page.endsWith(".css")) {
+                    || page.endsWith(".css")
+                    || page.endsWith("/")) {
                 visited.add(page);
                 crawPage(url);
             }
@@ -94,17 +99,19 @@ public class WebCrawler {
     }
 
     private static String getFilePath(String url) throws IOException {
-        String filePath = STATIC_RESOURCE_DIRECTORY + new URL(url).getPath().replace("/", "\\");
+        url = url.endsWith("/") ? url + "index.html" : url;
+        String fileName = new URL(url).getPath().replace("/", "\\");
+        String filePath = STATIC_RESOURCE_DIRECTORY + (fileName.isEmpty() ? "\\index.html" : fileName);
         Path directory = Paths.get(filePath.substring(0, filePath.lastIndexOf('\\')));
         Files.createDirectories(directory);
         return filePath;
     }
 
     private static void saveFile(String content, String filePath) throws IOException {
-        if (Files.notExists(Path.of(filePath))) {
-            logger.info("Creating Page: {}", filePath);
+        if (override || Files.notExists(Path.of(filePath))) {
+            logger.info("Creating File: {}", filePath);
             try (FileOutputStream output = new FileOutputStream(filePath)) {
-                output.write(content.replaceAll(replaceURL, "").getBytes());
+                output.write(content.replaceAll(replace1, "").replaceAll(replace2, "").getBytes());
             }
         }
     }
@@ -112,7 +119,7 @@ public class WebCrawler {
     // 图片处理用字节流，防止格式错误不能打开
     private static void saveFile(byte[] content, String filePath) throws IOException {
         if (Files.notExists(Path.of(filePath))) {
-            logger.info("Creating Page: {}", filePath);
+            logger.info("Creating Image: {}", filePath);
             try (FileOutputStream output = new FileOutputStream(filePath)) {
                 output.write(content);
             }

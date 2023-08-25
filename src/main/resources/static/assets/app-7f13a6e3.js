@@ -535,7 +535,7 @@ ${p}`))}}}};we(()=>{const d=document.querySelector("#app");Ve(d,"copy",c),zs(()=
 <li>一棵树不包含回路。</li>
 </ol>
 <p>下图就是一颗树，并且是一颗二叉树。</p>
-<figure><img src="https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/2019-6/二叉树-2.png" alt="二叉树" tabindex="0"><figcaption>二叉树</figcaption></figure>`,r:{minutes:7.12,words:2136},y:"a",t:"树"},["/cs-basics/data-structure/tree","/cs-basics/data-structure/tree.md"]],["v-3930485a","/cs-basics/algorithms/10-classical-sorting-algorithms.html",{d:1653620939e3,c:"计算机基础",g:["算法"],e:`<blockquote>
+<figure><img src="/2019-6/二叉树-2.png" alt="二叉树" tabindex="0"><figcaption>二叉树</figcaption></figure>`,r:{minutes:7.12,words:2136},y:"a",t:"树"},["/cs-basics/data-structure/tree","/cs-basics/data-structure/tree.md"]],["v-3930485a","/cs-basics/algorithms/10-classical-sorting-algorithms.html",{d:1653620939e3,c:"计算机基础",g:["算法"],e:`<blockquote>
 <p>本文转自：<a href="http://www.guoyaohua.com/sorting.html" target="_blank" rel="noopener noreferrer">http://www.guoyaohua.com/sorting.html</a>，JavaGuide 对其做了补充完善。</p>
 </blockquote>
 <h2> 引言</h2>
@@ -877,7 +877,7 @@ n&lt;=39</p>
 <p>Atomic 翻译成中文是原子的意思。在化学上，我们知道原子是构成一般物质的最小单位，在化学反应中是不可分割的。在我们这里 Atomic 是指一个操作是不可中断的。即使是在多个线程一起执行的时候，一个操作一旦开始，就不会被其他线程干扰。</p>
 <p>所以，所谓原子类说简单点就是具有原子/原子操作特征的类。</p>
 <p>并发包 <code>java.util.concurrent</code> 的原子类都存放在<code>java.util.concurrent.atomic</code>下,如下图所示。</p>
-<figure><img src="https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/2019-6/JUC原子类概览.png" alt="JUC原子类概览" tabindex="0"><figcaption>JUC原子类概览</figcaption></figure>`,r:{minutes:9.36,words:2808},y:"a",t:"Atomic 原子类总结"},["/java/concurrent/atomic-classes","/java/concurrent/atomic-classes.md"]],["v-808f5656","/java/concurrent/completablefuture-intro.html",{d:1636454878e3,c:"Java",g:["Java并发"],e:`<p>自己在项目中使用 <code>CompletableFuture</code> 比较多，看到很多开源框架中也大量使用到了 <code>CompletableFuture</code> 。</p>
+<figure><img src="/2019-6/JUC原子类概览.png" alt="JUC原子类概览" tabindex="0"><figcaption>JUC原子类概览</figcaption></figure>`,r:{minutes:9.36,words:2808},y:"a",t:"Atomic 原子类总结"},["/java/concurrent/atomic-classes","/java/concurrent/atomic-classes.md"]],["v-808f5656","/java/concurrent/completablefuture-intro.html",{d:1636454878e3,c:"Java",g:["Java并发"],e:`<p>自己在项目中使用 <code>CompletableFuture</code> 比较多，看到很多开源框架中也大量使用到了 <code>CompletableFuture</code> 。</p>
 <p>因此，专门写一篇文章来介绍这个 Java 8 才被引入的一个非常有用的用于异步编程的类。</p>
 <h2> 简单介绍</h2>
 <p><code>CompletableFuture</code> 同时实现了 <code>Future</code> 和 <code>CompletionStage</code> 接口。</p>
