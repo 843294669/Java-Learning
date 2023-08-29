@@ -12,8 +12,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class WebCrawler {
 
@@ -22,14 +25,25 @@ public class WebCrawler {
     private static String replace1 = "https://oss.javaguide.cn";
     private static String replace2 = "https://my-blog-to-use.oss-cn-beijing.aliyuncs.com";
     private static String STATIC_RESOURCE_DIRECTORY = Path.of(System.getProperty("user.dir"), "src/main/resources/static").toString();
-    private static List visited = new ArrayList<>();
+    private static ExecutorService tp = Executors.newFixedThreadPool(5);
+    private static Vector visited = new Vector<>();
     // 重试次数
-    private static int time = 0;
+    private static AtomicInteger time = new AtomicInteger(0);
     // 是否覆写文件开关
     private static boolean override = false;
 
-    public static void main(String[] args) {
-        crawPage(BASE_URL);
+    public static void main(String[] args) throws InterruptedException {
+        CountDownLatch cdl = new CountDownLatch(5);
+        for (int i = 0; i < 5; i++) {
+            tp.submit(new Runnable() {
+                @Override
+                public void run() {
+                    crawPage(BASE_URL);
+                    cdl.countDown();
+                }
+            });
+        }
+        cdl.await();
         logger.info("Finished.");
     }
 
@@ -50,19 +64,21 @@ public class WebCrawler {
                 saveFile(body, filePath);
                 // 继续提取URL
                 Document doc = Jsoup.parse(body);
+
                 extractURLs(doc.select("link[rel]"));
                 extractURLs(doc.select("script[src]"));
                 extractURLs(doc.select("img[src]"));
                 extractURLs(doc.select("a[href]"));
+
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             // 重试，可能是超时问题
-            if (time > 2) {
-                time = 0;
+            if (time.get() > 2) {
+                time.set(0);
                 return;
             }
-            time++;
+            time.getAndIncrement();
             crawPage(url);
         }
     }
