@@ -44,6 +44,7 @@ public class WebCrawler {
             });
         }
         cdl.await();
+        tp.close();
         logger.info("Finished.");
     }
 
