@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -31,17 +33,22 @@ public class WebCrawler {
     // 是否覆写文件开关
     private static boolean override = false;
 
-    public static void main(String[] args) throws InterruptedException {
-        CountDownLatch cdl = new CountDownLatch(1000);
+    public static void main(String[] args) {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var es = new ExecutorCompletionService<>(executor);
             IntStream.range(0, 1000).forEach(i -> {
-                executor.submit(() -> {
-                    crawPage(BASE_URL);
-                    cdl.countDown();
-                });
+                try {
+                    es.submit(() -> {
+                        crawPage(BASE_URL);
+                        return null;
+                    }).get();
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage());
+                } catch (ExecutionException e) {
+                    logger.error(e.getMessage());
+                }
             });
         }
-        cdl.await();
         logger.info("Finished.");
     }
 
