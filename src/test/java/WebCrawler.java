@@ -35,18 +35,10 @@ public class WebCrawler {
 
     public static void main(String[] args) {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var es = new ExecutorCompletionService<>(executor);
-            IntStream.range(0, 1000).forEach(i -> {
-                try {
-                    es.submit(() -> {
-                        crawPage(BASE_URL);
-                        return null;
-                    }).get();
-                } catch (InterruptedException e) {
-                    logger.error(e.getMessage());
-                } catch (ExecutionException e) {
-                    logger.error(e.getMessage());
-                }
+            IntStream.range(0, 20).forEach(i -> {
+                executor.submit(() -> {
+                    crawPage(BASE_URL);
+                });
             });
         }
         logger.info("Finished.");
