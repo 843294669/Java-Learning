@@ -14,9 +14,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public class WebCrawler {
 
@@ -25,7 +25,6 @@ public class WebCrawler {
     private static String replace1 = "https://oss.javaguide.cn";
     private static String replace2 = "https://my-blog-to-use.oss-cn-beijing.aliyuncs.com";
     private static String STATIC_RESOURCE_DIRECTORY = Path.of(System.getProperty("user.dir"), "src/main/resources/static").toString();
-    private static ExecutorService tp = Executors.newFixedThreadPool(5);
     private static Vector visited = new Vector<>();
     // 重试次数
     private static AtomicInteger time = new AtomicInteger(0);
@@ -33,18 +32,16 @@ public class WebCrawler {
     private static boolean override = false;
 
     public static void main(String[] args) throws InterruptedException {
-        CountDownLatch cdl = new CountDownLatch(5);
-        for (int i = 0; i < 5; i++) {
-            tp.submit(new Runnable() {
-                @Override
-                public void run() {
+        CountDownLatch cdl = new CountDownLatch(1000);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 1000).forEach(i -> {
+                executor.submit(() -> {
                     crawPage(BASE_URL);
                     cdl.countDown();
-                }
+                });
             });
         }
         cdl.await();
-        tp.close();
         logger.info("Finished.");
     }
 
