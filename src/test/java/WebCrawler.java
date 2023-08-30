@@ -34,6 +34,7 @@ public class WebCrawler {
     private static boolean override = false;
 
     public static void main(String[] args) {
+        // 利用 try-resource 阻塞主线程，虚拟线程不需要池化。
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             IntStream.range(0, 20).forEach(i -> {
                 executor.submit(() -> {
