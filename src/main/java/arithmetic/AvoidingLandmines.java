@@ -2,7 +2,7 @@ package arithmetic;
 
 /**
  * Avoiding Landmines: Dynamic Programming Hard Algorithms Data Structures Problem-Solving
- *
+ * <p>
  * A robot is moving on a grid of size n*m. In one move, it moves one step
  * right or one step down. Some cells of the grid have landmines, so the
  * robot has to avoid them. The grid is given as an array of size n*m, grid[n][m], where grid[i][j] = 0
@@ -29,12 +29,12 @@ public class AvoidingLandmines {
                     ways[i][j] = 1;
                     continue;
                 }
-                ways[i][j] = ways[i - 1][j] + ways[i][j - 1];
+                ways[i][j] = (ways[i - 1][j] + ways[i][j - 1]) % 1000000007;
             }
         }
 
         // Perform modulo operation on the number of ways to ensure the result is within the range
-        return ways[n - 1][m - 1] %= (Math.pow(10, 9) + 7);
+        return ways[n - 1][m - 1];
     }
 
     public static void main(String[] args) {
