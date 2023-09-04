@@ -11,36 +11,37 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 public class MaximumHttpTransfer {
 
+    private static String url = "https://jsonmock.hackerrank.com/api/transactions?page=";
+    private static NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
+
     public static List<String> maximumTransfer(String name, String city) {
-        long totalPages;
-        JSONObject jsonObj = null;
-        List<Float> creditList = new ArrayList<>();
-        List<Float> debitList = new ArrayList<>();
+        int totalPages;
         int curPage = 1;
+        float maxCredit = 0;
+        float maxDebit = 0;
         List<String> strList = new ArrayList<>();
         try {
             do {
-                String url2 = "https://jsonmock.hackerrank.com/api/transactions?page=" + curPage;
-                jsonObj = getResponseFromUrl(url2);
-                totalPages = (long) jsonObj.get("total_pages");
-                JSONArray dataArray = (JSONArray) jsonObj.get("data");
+                JSONObject jsonObj = getResponseFromUrl(url + curPage);
+                totalPages = jsonObj.getInt("total_pages");
+                JSONArray dataArray = jsonObj.getJSONArray("data");
                 for (int i = 0; i < dataArray.length(); i++) {
-                    JSONObject dataObject = (JSONObject) dataArray.get(i);
-                    String tempName = (String) dataObject.get("userName");
-                    JSONObject location = (JSONObject) dataObject.get("location");
-                    String tempCity = (String) location.get("city");
+                    JSONObject dataObject = dataArray.getJSONObject(i);
+                    String tempName = dataObject.getString("userName");
+                    JSONObject location = dataObject.getJSONObject("location");
+                    String tempCity = location.getString("city");
                     if (name.equals(tempName) && (city.equals(tempCity))) {
-                        String txnType = (String) dataObject.get("txnType");
+                        float amount = nf.parse(dataObject.getString("amount")).floatValue();
+                        String txnType = dataObject.getString("txnType");
                         if (txnType.equals("credit")) {
-                            creditList.add(NumberFormat.getCurrencyInstance(Locale.US).parse((String) dataObject.get("amount")).floatValue());
+                            maxCredit = Math.max(maxCredit, amount);
                         } else {
-                            debitList.add(NumberFormat.getCurrencyInstance(Locale.US).parse((String) dataObject.get("amount")).floatValue());
+                            maxDebit = Math.max(maxDebit, amount);
                         }
                     }
                 }
@@ -51,8 +52,8 @@ public class MaximumHttpTransfer {
             e.printStackTrace();
         }
 
-        strList.add(NumberFormat.getCurrencyInstance(Locale.US).format(Collections.max(creditList)));
-        strList.add(NumberFormat.getCurrencyInstance(Locale.US).format(Collections.max(debitList)));
+        strList.add(nf.format(maxCredit));
+        strList.add(nf.format(maxDebit));
         return strList;
 
     }
