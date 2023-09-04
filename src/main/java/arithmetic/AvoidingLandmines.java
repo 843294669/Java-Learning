@@ -19,14 +19,14 @@ public class AvoidingLandmines {
         int n = grid.length;
         int m = grid[0].length;
         int[][] ways = new int[n][m];
-        ways[0][0] = grid[0][0];
 
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j < m; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 if (grid[i][j] == 1) {
-                    if (i == 1) ways[i][0] = ways[i - 1][0];
-                    if (j == 1) ways[0][j] = ways[0][j - 1];
-                    ways[i][j] = (ways[i - 1][j] + ways[i][j - 1]) % 1000000007;
+                    if (i > 0 && j > 0) ways[i][j] = (ways[i - 1][j] + ways[i][j - 1]) % 1000000007;
+                    else if (i == 0 && j == 0) ways[0][0] = 1;
+                    else if (i > j) ways[i][0] = ways[i - 1][0];
+                    else ways[0][j] = ways[0][j - 1];
                 }
             }
         }
@@ -36,6 +36,8 @@ public class AvoidingLandmines {
 
     public static void main(String[] args) {
         int[][] grid = {
+                {1, 1, 0, 1},
+                {1, 1, 0, 1},
                 {1, 1, 0, 1},
                 {1, 1, 1, 1}
         };
