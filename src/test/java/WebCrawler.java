@@ -13,9 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Vector;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 public class WebCrawler {
 
@@ -31,20 +29,13 @@ public class WebCrawler {
     private static boolean override = false;
 
     public static void main(String[] args) {
-        // 利用 try-resource 阻塞主线程，虚拟线程不需要池化。
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            IntStream.range(0, 20).forEach(i -> {
-                executor.submit(() -> {
-                    crawPage(BASE_URL);
-                });
-            });
-        }
+        crawPage(BASE_URL);
         logger.info("Finished.");
     }
 
     private static void crawPage(String url) {
         try {
-            logger.info("Craw Page: {}", url);
+            // logger.info("Craw Page: {}", url);
             Connection.Response resp = Jsoup.connect(url)
                     .timeout(6000)
                     .maxBodySize(0)
