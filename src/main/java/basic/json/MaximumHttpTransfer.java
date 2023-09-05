@@ -1,14 +1,15 @@
 package basic.json;
 
-
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +21,24 @@ public class MaximumHttpTransfer {
     private static NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
 
     public static List<String> maximumTransfer(String name, String city) {
-        int totalPages;
         int curPage = 1;
+        long totalPages;
         float maxCredit = 0;
         float maxDebit = 0;
         List<String> strList = new ArrayList<>();
         try {
             do {
-                JSONObject jsonObj = getResponseFromUrl(url + curPage);
-                totalPages = jsonObj.getInt("total_pages");
-                JSONArray dataArray = jsonObj.getJSONArray("data");
-                for (int i = 0; i < dataArray.length(); i++) {
-                    JSONObject dataObject = dataArray.getJSONObject(i);
-                    String tempName = dataObject.getString("userName");
-                    JSONObject location = dataObject.getJSONObject("location");
-                    String tempCity = location.getString("city");
+                JSONObject jsonObject = getResponseFromUrl(url + curPage);
+                totalPages = (long) jsonObject.get("total_pages");
+                JSONArray dataArray = (JSONArray) jsonObject.get("data");
+                for (int i = 0; i < dataArray.size(); i++) {
+                    JSONObject dataObject = (JSONObject) dataArray.get(i);
+                    String tempName = (String) dataObject.get("userName");
+                    JSONObject location = (JSONObject) dataObject.get("location");
+                    String tempCity = (String) location.get("city");
                     if (name.equals(tempName) && (city.equals(tempCity))) {
-                        float amount = nf.parse(dataObject.getString("amount")).floatValue();
-                        String txnType = dataObject.getString("txnType");
+                        float amount = nf.parse((String) dataObject.get("amount")).floatValue();
+                        String txnType = (String) dataObject.get("txnType");
                         if (txnType.equals("credit")) {
                             maxCredit = Math.max(maxCredit, amount);
                         } else {
@@ -58,21 +59,19 @@ public class MaximumHttpTransfer {
 
     }
 
-    static JSONObject getResponseFromUrl(String urlString) {
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("accept", "application/json");
-            connection.setRequestMethod("GET");
-            if (connection.getResponseCode() == 200) {
-                return (JSONObject) new JSONParser(connection.getInputStream()).parse();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+    static JSONObject getResponseFromUrl(String urlString) throws IOException, ParseException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
+        connection.setRequestProperty("accept", "application/json");
+        connection.setRequestMethod("GET");
+        if (connection.getResponseCode() == 200) {
+            return (JSONObject) new JSONParser().parse(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maximumTransfer("Helena Fernandez", "Ilchester"));
+        System.out.println(maximumTransfer("Bob Martin", "Bourg"));
     }
 
 }
