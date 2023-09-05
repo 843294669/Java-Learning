@@ -2,14 +2,14 @@ package basic.thread;
 
 import java.util.concurrent.*;
 
-public class CompletionService {
+public class ThreadBlock {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         // 创建线程池
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         // 创建CompletionService
-        java.util.concurrent.CompletionService<Integer> completionService = new ExecutorCompletionService<>(executor);
+        CompletionService completionService = new ExecutorCompletionService<>(executor);
 
         // 提交任务
         for (int i = 1; i <= 5; i++) {
