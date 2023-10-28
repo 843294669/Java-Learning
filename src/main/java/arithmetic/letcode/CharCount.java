@@ -1,4 +1,4 @@
-package arithmetic;
+package arithmetic.letcode;
 
 import java.io.*;
 import java.util.Map;

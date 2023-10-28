@@ -1,4 +1,4 @@
-package arithmetic;
+package arithmetic.letcode;
 
 import java.io.BufferedReader;
 import java.io.IOException;

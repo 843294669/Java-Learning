@@ -1,4 +1,4 @@
-package arithmetic;
+package arithmetic.letcode;
 
 /**
  * 使用欧几里德算法递归求解最大公约数

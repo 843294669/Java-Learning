@@ -1,4 +1,4 @@
-package arithmetic;
+package arithmetic.letcode;
 
 /**
  * Avoiding Landmines: Dynamic Programming Hard Algorithms Data Structures Problem-Solving

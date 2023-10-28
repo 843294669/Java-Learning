@@ -1,4 +1,4 @@
-package arithmetic;
+package arithmetic.letcode;
 
 import java.util.ArrayList;
 import java.util.List;
