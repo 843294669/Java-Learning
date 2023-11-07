@@ -29,7 +29,7 @@ public class MaximumHttpTransfer {
         try {
             do {
                 JSONObject jsonObject = getResponseFromUrl(url + curPage);
-                totalPages = (long) jsonObject.get("total_pages");
+                totalPages = (Long) jsonObject.get("total_pages");
                 JSONArray dataArray = (JSONArray) jsonObject.get("data");
                 for (int i = 0; i < dataArray.size(); i++) {
                     JSONObject dataObject = (JSONObject) dataArray.get(i);
